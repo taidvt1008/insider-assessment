@@ -1,0 +1,196 @@
+basePath: /
+definitions:
+  model.ErrorResponse:
+    properties:
+      message:
+        example: Internal server error
+        type: string
+      status:
+        example: error
+        type: string
+      time:
+        example: "2025-10-19T09:00:00Z"
+        type: string
+    type: object
+  model.HealthResponse:
+    properties:
+      services:
+        additionalProperties:
+          type: string
+        example:
+          database: healthy
+          redis: healthy
+          scheduler: running
+        type: object
+      status:
+        example: healthy
+        type: string
+      timestamp:
+        example: "2025-10-19T09:00:00Z"
+        type: string
+    type: object
+  model.Pagination:
+    properties:
+      count:
+        example: 2
+        type: integer
+      has_more:
+        example: true
+        type: boolean
+      limit:
+        example: 10
+        type: integer
+      offset:
+        example: 0
+        type: integer
+      total:
+        example: 5
+        type: integer
+    type: object
+  model.SchedulerActionResponse:
+    properties:
+      message:
+        example: Scheduler started successfully
+        type: string
+      status:
+        example: success
+        type: string
+      time:
+        example: "2025-10-19T08:10:00Z"
+        type: string
+    type: object
+  model.SentMessageResponseData:
+    properties:
+      content:
+        example: Hello from Insider!
+        type: string
+      id:
+        example: 1
+        type: integer
+      phone_number:
+        example: "+84901234567"
+        type: string
+      sent_at:
+        example: "2025-10-19T07:41:45Z"
+        type: string
+      status:
+        example: sent
+        type: string
+    type: object
+  model.SentMessagesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.SentMessageResponseData'
+        type: array
+      pagination:
+        $ref: '#/definitions/model.Pagination'
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Golang-based automatic message sending service
+  title: Insider Message Sender API
+  version: "1.0"
+paths:
+  /api/v1/messages/failed:
+    get:
+      parameters:
+      - default: 10
+        description: Number of messages to return
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Number of messages to skip
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SentMessagesResponse'
+      summary: Get list of failed messages (with pagination)
+      tags:
+      - Messages
+  /api/v1/messages/sent:
+    get:
+      parameters:
+      - default: 10
+        description: Number of messages to return
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Number of messages to skip
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SentMessagesResponse'
+      summary: Get list of sent messages (with pagination)
+      tags:
+      - Messages
+  /api/v1/scheduler/start:
+    post:
+      description: Starts the background scheduler that periodically sends pending
+        messages every configured interval.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SchedulerActionResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Start automatic message sending
+      tags:
+      - Scheduler
+  /api/v1/scheduler/stop:
+    post:
+      description: Stops the background scheduler. No further messages will be sent
+        until restarted.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SchedulerActionResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Stop automatic message sending
+      tags:
+      - Scheduler
+  /health:
+    get:
+      description: Check the health status of the service including database connectivity
+        and scheduler status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.HealthResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/model.HealthResponse'
+      summary: Health check endpoint
+      tags:
+      - Health
+swagger: "2.0"

@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: insider_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-insider}
+    ports:
+      - "5432:5432"
+    volumes:
+      - insider-postgres-data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - insider-net
+
+  redis:
+    image: redis:8-alpine
+    container_name: insider_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - insider-redis-data:/data
+    networks:
+      - insider-net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: insider_app
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - .env.docker
+    ports:
+      - "8080:8080"
+    networks:
+      - insider-net
+
+networks:
+  insider-net:
+    driver: bridge
+
+volumes:
+  insider-postgres-data:
+  insider-redis-data:

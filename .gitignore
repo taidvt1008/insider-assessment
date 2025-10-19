@@ -1,0 +1,26 @@
+# Binaries
+/insider-message-sender
+
+# Build artifacts
+*.exe
+*.out
+*.log
+
+# Vendor / cache
+/vendor/
+/bin/
+/build/
+/dist/
+/tmp/
+/.idea/
+/.vscode/
+
+# OS files
+.DS_Store
+
+# Go
+*.coverprofile
+
+# Env & config
+.env
+.env.local
