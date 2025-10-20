@@ -220,8 +220,8 @@ make redis
 ## 🧪 Testing
 
 ```bash
-# Test health check
-curl http://localhost:8080/health
+# Test health check via Makefile helper
+make test-health
 
 # Test scheduler start
 make test-start
@@ -229,8 +229,11 @@ make test-start
 # Test scheduler stop
 make test-stop
 
-# Test message listing
-make test-list
+# Test listing sent messages
+make test-list-sent
+
+# Test listing failed messages
+make test-list-failed
 ```
 
 ## 📁 Project Structure
@@ -328,11 +331,11 @@ make clean       # Clean build artifacts
 ### Testing Commands
 
 ```bash
-make test-start     # Test scheduler start endpoint
-make test-stop      # Test scheduler stop endpoint
-make test-list      # Test get sent messages endpoint
-make test-failed    # Test get failed messages endpoint
-make test-graceful  # Test graceful shutdown functionality
+make test-health       # Test health check endpoint
+make test-start        # Test scheduler start endpoint
+make test-stop         # Test scheduler stop endpoint
+make test-list-sent    # Test get sent messages endpoint
+make test-list-failed  # Test get failed messages endpoint
 ```
 
 ### Code Quality
