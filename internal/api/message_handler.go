@@ -53,13 +53,7 @@ func GetSentMessages(repo *repository.MessageRepository) gin.HandlerFunc {
 		}
 
 		for i, m := range msgs {
-			resp.Data[i] = model.SentMessageResponseData{
-				ID:          m.ID,
-				PhoneNumber: m.PhoneNumber,
-				Content:     m.Content,
-				Status:      m.Status,
-				SentAt:      m.SentAt,
-			}
+			resp.Data[i] = model.SentMessageResponseData(m)
 		}
 
 		c.JSON(http.StatusOK, resp)
@@ -109,13 +103,7 @@ func GetFailedMessages(repo *repository.MessageRepository) gin.HandlerFunc {
 		}
 
 		for i, m := range msgs {
-			resp.Data[i] = model.SentMessageResponseData{
-				ID:          m.ID,
-				PhoneNumber: m.PhoneNumber,
-				Content:     m.Content,
-				Status:      m.Status,
-				SentAt:      m.SentAt,
-			}
+			resp.Data[i] = model.SentMessageResponseData(m)
 		}
 
 		c.JSON(http.StatusOK, resp)
